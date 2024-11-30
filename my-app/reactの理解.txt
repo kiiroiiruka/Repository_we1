@@ -1,0 +1,50 @@
+const [変数, セッター] = useState(初期値);//親コンポーネントクラスから子コンポーネントクラス内の変数などの値を変更したいときに書くコード
+
+Reactでは、コンポーネントの状態（state）を管理するために、クラスコンポーネントでは 
+this.state と this.setState を使って状態を管理していましたが、関数コンポーネントでは useState フックを使って状態を管理します。
+
+ーーーーーーーuseEffectの使い方ーーーーーーー
+useEffectはコンポーネント起動時に一度実行される関数。しかし、useEffect内にあるreturn=>{};
+内に書かれたプログラムだけはコンポーネント動作終了時に一度実行されるプログラム。
+
+A. 初回マウント時のみ実行
+useEffect(() => {console.log("初回のみ実行");}, []);//起動時のみ1回実行
+
+B. 依存変数が変更されたときに実行
+useEffect(() => {console.log("count が変わったよ！");}, [count]); // countが変更されたときだけ実行
+
+C. コンポーネントがアンマウントされるときのクリーンアップ
+useEffect(() => 
+{
+  const handleScroll = () => console.log("スクロール中");//イベント発生時に起動する関数のプログラム
+  window.addEventListener("scroll", handleScroll);//window.addEventListener(イベント名, イベント発生時に実行する関数);
+  return () => 
+ {
+    window.removeEventListener("scroll", handleScroll);//window.removeEventListener(イベント名, 削除したい関数名);とやることでcomponent起動させるたびにコンポーネントが増え続けるのを防ぐ
+    console.log("クリーンアップしました");
+  }; //useEffect内のプログラムはプログラムファイル起動時に一度実行される、しかし、return()=>{}内のプログラムだけはプログラムファイル起動終了時に一度起動される。
+}, []);//[]じゃなくて[count]ってなっている場合はcount変数内の値が変化するたびに関数内が起動されるようになる。 
+
+D. 定期実行
+useEffect(() => 
+{
+  const interval = setInterval(() => 
+ {
+    console.log("一定間隔で実行中！");
+  }, 1000);
+  return () => clearInterval(interval); //コンポーネント動作終了時にreturn内は一度実行される。
+}, []);
+
+ーーーーーreactでコンポーネントの書き方ーーーーー
+const 関数名=()=>
+{
+       const [count, setCount] = useState(0);//useState関数使って初期値0のcount変数を作成すると同時に,setCount関数でその変数の値変更できるようにする
+       count return内で使う関数名=()=>
+       {
+        setCount(count+1);//setCountというcountの値を変えるためだけの関数を起動し値を1増やす
+       }
+return (画面表示プログラム)
+}
+
+const [変数名, 左に書いた変数内の値を変える用の関数名] = useState(0);//
+
